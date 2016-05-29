@@ -1,5 +1,6 @@
 /*
 
 !.gitignore
-!pelicanconf.py
 !/content
+!pelicanconf.py
+!LICENSE
