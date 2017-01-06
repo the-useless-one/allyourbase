@@ -552,8 +552,8 @@ system:
 * A power cord
 
 We now have a full Cranberry Pi system. The only missing part is given by the
-elf Holly Evergreen: a Cranbian image, which we can use to boot on our
-Cranberry Pi.
+elf Holly Evergreen: a `Cranbian image <https://www.northpolewonderland.com/cranbian.img.zip>`__,
+which we can use to boot on our Cranberry Pi.
 
 However, in order to use our CranPi, we need the password to open a user
 session. Luckily, `this tutorial <https://pen-testing.sans.org/blog/2016/12/07/mount-a-raspberry-pi-file-system-image>`__
