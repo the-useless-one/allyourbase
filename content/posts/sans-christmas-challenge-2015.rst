@@ -10,7 +10,7 @@ SANS Christmas Challenge 2015
     :align: center
 
 This year again, the SANS institute delights us with a wonderful
-`Christmas Challenge <https://holidayhackchallenge.com/>`__.
+`Christmas Challenge <https://holidayhackchallenge.com/2015/>`__.
 
 We follow the `Dosis family <https://quest.holidayhackchallenge.com/>`__,
 after they purchase a
