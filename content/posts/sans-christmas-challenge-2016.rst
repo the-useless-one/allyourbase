@@ -21,6 +21,8 @@ fighting sounds from downstairs. When they get down, everything is destroyed,
 as if people had been fighting. But no trace of Santa Claus, only a business
 card, which we can find in `the Dosis' living room <https://quest2016.holidayhackchallenge.com/>`__...
 
+.. contents:: Table of contents
+
 Part 1: A Most Curious Business Card
 ------------------------------------
 
@@ -60,7 +62,7 @@ You can download the ZIP file `here </docs/sans-christmas-challenge-2016/SantaGr
 
 Unfortunately, the archive is password protected:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ unzip SantaGram_v4.2.zip 
     Archive:  SantaGram_v4.2.zip
@@ -434,7 +436,7 @@ to see the hidden message: :code:`Bug Bounty`. It so happens that the password
 to the ZIP file is :code:`bugbounty`. We can now extract the APK file from the
 ZIP archive:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ unzip SantaGram_v4.2.zip 
     Archive:  SantaGram_v4.2.zip
@@ -450,7 +452,7 @@ to decompile the APK.
 Since we're looking for credentials, we can then :code:`grep` on
 :code:`username`, :code:`password`, etc., to find what we're looking for:
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 10
 
     $ grep --include "*.java" -Rn password .
@@ -503,7 +505,7 @@ We're then supposed to look at an audio file. To do this, we have to take a
 look at the resources of the APK file. To do this, we'll unzip the APK. Indeed,
 APK files are just particular ZIP files:
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 10
 
     $ unzip -d SantaGram_4.2_unzipped SantaGram_4.2.apk 
@@ -561,7 +563,7 @@ by Josh Wright teaches us how we can mount a Raspberry Pi file system image.
 Since Cranberry Pi and Raspberry Pi are basically the same (wake up, sheeple!),
 we now know how to mount our Cranbian image:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ unzip cranbian.img.zip
     Archive:  cranbian.img.zip
@@ -587,7 +589,7 @@ we now know how to mount our Cranbian image:
 We now have access to the Cranbian file system. This means that we can try to
 crack passwords in the :code:`shadow` file.
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 29
 
     $ cat cranbian_img_extracted/etc/shadow
@@ -623,7 +625,7 @@ crack passwords in the :code:`shadow` file.
 We can do so by using John the Ripper with the `rockyou <https://github.com/danielmiessler/SecLists/raw/master/Passwords/rockyou.txt.tar.gz>`__
 dictionary:
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 6
 
     $ john --wordlist=./rockyou.txt ./cranbian_img_extracted/etc/shadow
@@ -656,7 +658,7 @@ Elf House #2
 So, apparently, the passphrase is in two parts, in a network capture file.
 Let's take a look at this file:
 
-.. code-block:: shell
+.. code-block:: console
 
     scratchy@31368df46952:/$ ls -l /out.pcap 
     -r-------- 1 itchy itchy 1087929 Dec  2 15:05 /out.pcap
@@ -666,7 +668,7 @@ Let's take a look at this file:
 So, this file belongs to user :code:`itchy`, and we can't read it. Let's see
 what's installed on the system:
 
-.. code-block:: shell
+.. code-block:: console
 
     scratchy@31368df46952:/$ cat /var/log/apt/history.log 
     Start-Date: 2016-11-04  18:30:58
@@ -689,7 +691,7 @@ us to run :code:`tcpdump` as :code:`itchy` without having to provide any
 password... Let's try to use :code:`sudo` and :code:`tcpdump` to read the
 content of the file, and write it in another one:
 
-.. code-block:: shell
+.. code-block:: console
 
     scratchy@31368df46952:/$ sudo -u itchy tcpdump -r /out.pcap -w /tmp/out2.pcap
     sudo: unable to resolve host 31368df46952
@@ -731,7 +733,7 @@ Anyway, if you issue :code:`sudo -l`, you can see that we can indeed run
 :code:`tcpdump` and :code:`strings` as the :code:`itchy` user, without knowing
 the :code:`scratchy` user's password:
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 7 8
 
     scratchy@8bb89db76dd2:/$ sudo -l
@@ -816,7 +818,7 @@ HTTP request, for the second half:
 We can see that a lot of binary content is being downloaded. I extracted it,
 and tried to identify it:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ file secondhalf.bin 
     secondhalf.bin: data
@@ -825,7 +827,7 @@ Uh oh, :code:`file` was not able to identify the type of file. Maybe the start
 of the file is just garbage, but there are some files carved later in the file.
 Let's use :code:`binwalk`, it should give us something to work with:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ binwalk secondhalf.bin 
 
@@ -834,7 +836,7 @@ Let's use :code:`binwalk`, it should give us something to work with:
 
 Damn, nothing. Maybe :code:`foremost` will have more luck?
 
-.. code-block:: shell
+.. code-block:: console
 
     $ foremost secondhalf.bin 
     Processing: secondhalf.bin
@@ -865,7 +867,7 @@ Damn, nothing. Maybe :code:`foremost` will have more luck?
 Still nothing... Is this file completely random? Let's use :code:`ent` to
 measure the entropy of the file:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ ent secondhalf.bin 
     Entropy = 7.999841 bits per byte.
@@ -908,7 +910,7 @@ strings with a minimum length of 4, **with a default encoding of 7-bit ASCII**.
 The binary data probably contained a string encoding in another form. I
 immediatly tried 16-bit big endian:
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 2
 
     $ strings -e b secondhalf.bin
@@ -934,7 +936,7 @@ According to the `motd <https://en.wikipedia.org/wiki/Motd_%28Unix%29>`__, there
 is on the file system a file containing the passphrase to the door. We can
 use the :code:`find` command to list every file on the file system:
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 5
 
     $ find / -type f 2> /dev/null > ~/files.txt
@@ -954,7 +956,7 @@ The higlighted file seems interesting. However, there's a lot of tricky
 characters in the path, and tabulation autocomplete is disabled on this
 terminal. However, we can use some shell-fu to get the content of the file:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ find ~/.doormat -name "key_for_the_door.txt" -exec cat {} \;
     key: open_sesame
@@ -1079,7 +1081,7 @@ learn how to use this tool, there seems to be a steep learning curve!), we can
 see that this function is called when you managed to kill the wumpus, and gives
 you the passphrase:
 
-.. code-block:: shell
+.. code-block:: console
 
     [0x00605118]> pdf @ fcn.kill_wump
     / (fcn) fcn.kill_wump 546
@@ -1222,7 +1224,7 @@ you the passphrase:
 Instead of trying to statically analyze this function, we can use :code:`gdb`
 to directly jump to it:
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 23 34
 
     $ gdb ./wumpus
@@ -1266,7 +1268,7 @@ to directly jump to it:
 If you `reaaaaally` want to do it by hand, here's a short explanation (statical
 analysis and disassembly are not my strong suits):
 
-.. code-block:: shell
+.. code-block:: console
 
     [...]
     |           0x00402656      bf18000000     mov edi, 0x18               ; "0.@"
@@ -1306,7 +1308,7 @@ We then move on to the second character, using the following string:
     We have no fut\ **u**\ re because our present is too volatile. We have
     only risk management.
 
-.. code-block:: shell
+.. code-block:: console
 
     [...]
     |           0x00402679      488d5001       lea rdx, [rax + 1]          ; 0x1
@@ -1324,7 +1326,7 @@ Our :code:`local_8h` now begins with :code:`wu`. We do this for the rest of the
 strings, and we finally get :code:`wumpus is misunderstood`, before the call to
 the :code:`sym.to_upper` function, giving us the final passphrase.
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 6 9 10 11
 
     [...]
@@ -1499,7 +1501,7 @@ However, we can't seem to start a party on the web page. Similarly as last
 year, and since an elf in the North Pole hints to do so, I suspected there was
 another open port, on which we could connect to play the Dungeon game:
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 14
 
     $ nmap dungeon.northpolewonderland.com
@@ -1521,7 +1523,7 @@ another open port, on which we could connect to play the Dungeon game:
 
 The last port is not a standard one, let's connect to it with :code:`nc`:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ nc dungeon.northpolewonderland.com 11111                                                                                                                                         
     Welcome to Dungeon.         This version created 11-MAR-78.
@@ -1698,7 +1700,7 @@ to enable debug data.
 I'm basically going to use `this excellent tutorial <http://blog.dewhurstsecurity.com/2015/11/10/mobile-security-certificate-pining.html>`__
 to patch the application and rebuild it without any problem.
 
-.. code-block:: shell
+.. code-block:: console
 
     # First, we're disassembling the application
     $ apktool d ./SantaGram_4.2.apk -o SantaGram_4.2_disassembled                            
@@ -1751,7 +1753,7 @@ intercepting proxy's CA certificate in your telephone. Just a reminder that
 Android phones can only import PEM, and that by default Burp exports its CA
 certificate in DER. You can use the following OpenSSL command to convert it:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ openssl x509 -inform der -in ./burpca.der -out burpca.pem
 
@@ -2414,7 +2416,7 @@ Playing with the different parameters to conduct usual attacks (SQLi, LFI,
 etc.) didn't lead to anything. On the suggestion of one of the elves, we can
 use :code:`nmap -sC` to find interesting files hosted by the web server:
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 13
 
     $ nmap -sC analytics.northpolewonderland.com
@@ -2447,7 +2449,7 @@ download the source code of the website to analyze it. It also means that we
 have access to the history of every file modifications. Let's download the
 source of the web site with :code:`wget`:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ wget -r -k -np https://analytics.northpolewonderland.com/.git/
     --2016-12-26 11:53:55--  https://analytics.northpolewonderland.com/.git/
@@ -2497,7 +2499,7 @@ source of the web site with :code:`wget`:
 Alright, the Git repository was completely downloaded, but the source files
 don't seem to be here. Let's inspect the Git repository:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ cd analytics.northpolewonderland.com
     $ git status
@@ -2549,7 +2551,7 @@ Sorry about the French Git output, but "supprimé" means "deleted". So, every
 source file was deleted, but the deletion was not commited, which means we can
 cancel the deletion:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ git checkout -- .
     $ ls
@@ -2684,7 +2686,7 @@ in the cookie :code:`AUTH`. Since we have the encryption key in
         echo bin2hex($auth);
     ?>
 
-.. code-block:: shell
+.. code-block:: console
 
     $ php exploit.php
     82532b2136348aaa1fa7dd2243dc0dc1e10948231f339e5edd5770daf9eef18a4384f6e7bca04d86e573b965cc9c6549b449486763a20363b71876884152
@@ -2728,7 +2730,7 @@ But, if we take a look at the Git log, we can see that the file was "fixed":
 
 Let's see the different modifications made on :code:`sprusage.sql`:
 
-.. code-block:: shell
+.. code-block:: console
     :hl_lines: 16
 
     $ git log -p -- ./sprusage.sql

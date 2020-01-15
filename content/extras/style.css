@@ -1,6 +1,11 @@
+.underline
+{
+    text-decoration: underline;
+}
+
 .strike
 {
-  text-decoration: line-through;
+    text-decoration: line-through;
 }
 
 img.align-center

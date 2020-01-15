@@ -51,10 +51,10 @@ DEFAULT_PAGINATION = 10
 
 STATIC_PATHS = ['images', 'docs', 'extras']
 
-THEME = '/var/www/allyourbase/pelican-themes/Flex'
+THEME = '/home/useless/allyourbase/pelican-themes/Flex'
 
-PLUGIN_PATHS = ['/var/www/allyourbase/pelican-plugins']
+PLUGIN_PATHS = ['/home/useless/allyourbase/pelican-plugins']
 PLUGINS = ['summary']
 
 # Uncomment following line if you want document-relative URLs when developing
-RELATIVE_URLS = True
+RELATIVE_URLS = False

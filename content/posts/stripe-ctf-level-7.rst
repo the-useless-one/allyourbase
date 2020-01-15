@@ -108,7 +108,7 @@ much time. Fortunately, two guys I was working with on the CTF,
 could forge the signature for us. The script was taken down since then,
 but you can find another working one `here <https://gist.github.com/philfreo/3873715>`_.
 
-.. code-block:: shell
+.. code-block:: console
 
     $ python sha-padding.py
     usage: sha-padding.py <keylen> <original_message> <original_signature>
@@ -155,7 +155,7 @@ Now, we just have to make the order:
     if __name__ == "__main__":
         main()
 
-.. code-block:: shell
+.. code-block:: console
 
     $ python forged_client.py
     {"confirm_code": "dummy-password", "message": "Great news: 10 liege

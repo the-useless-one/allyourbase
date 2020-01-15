@@ -479,7 +479,7 @@ Conclusion
 ==========
 
 I'll give it to you: this challenge wasn't really complicated. Mostly
-because the first zones of both controllers where kinda easy, but also
+because the first zones of both controllers were kinda easy, but also
 because of all the hints in the tweets. Yet, I'm still glad I did it
 because:
 
