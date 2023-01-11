@@ -515,7 +515,7 @@ It seems that our menu has an hidden function. If we input :code:`9`, we get
 access to a PowerShell console. Let's do so, and use our shell to analyze the
 :code:`onboard.db` file:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 1 8 11 23
 
     Please make a selection: 9
@@ -545,7 +545,7 @@ access to a PowerShell console. Let's do so, and use our shell to analyze the
 
 Hello, Scott Chan! We can now use :code:`runtoanswer` to input our answer:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 3
 
     PS /home/elf> ./runtoanswer                                                                    

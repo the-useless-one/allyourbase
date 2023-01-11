@@ -42,6 +42,10 @@ Here's my write-up for the `2019 SANS Christmas Challenge <https://holidayhackch
 Introduction
 ~~~~~~~~~~~~
 
+This write-up received a `super honorable mention <https://holidayhackchallenge.com/2019/winners_answers.html>`__
+from the SANS team. I was also a runner up for the Best Overall Answer. Thank
+you so much for this, I'm incredibly humbled!
+
 Santa is organizing a new KringleCon, with new speakers and all that! It's
 taking place at Elf University.
 
@@ -710,7 +714,7 @@ Apparently, the research lab at Elf U is building a laser that can shoot beams
 of Christmas cheer. However, someone apparently messed with the parameters, and
 now the laser is not producing enough Mega-Jollies per liter.
 
-.. code-block:: console
+.. code-block:: ps1con
 
     WARNGING: ctrl + c restricted in this terminal - Do not use endless loops
     Type exit to exit PowerShell.
@@ -740,7 +744,7 @@ now the laser is not producing enough Mega-Jollies per liter.
 Let's try to find the correct value for the different parameters. Let's start
 with the :code:`Invoke-WebRequest` command:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> (Invoke-WebRequest -Uri http://localhost:1225/).RawContent
     HTTP/1.0 200 OK                                                                           
@@ -787,7 +791,7 @@ correct values for the laser's parameters, we'll input them here.
 
 Now, let's take a look at this calling card file:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 6
 
     PS /home/elf> Get-Content /home/callingcard.txt
@@ -803,7 +807,7 @@ Now, let's take a look at this calling card file:
 The calling card seems to imply that we can find some riddles in the command
 history. So let's dig into it:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 11 13
 
     PS /home/elf> get-history
@@ -823,7 +827,7 @@ history. So let's dig into it:
 We've found the correct value for the angle, which seems to be :code:`65.5`.
 The ninth entry also seems interesting, let's take a look at it:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> get-history -id 9  | format-list
 
@@ -840,7 +844,7 @@ Sharing :code:`name=value` variables system wide... This seems to point to
 `environment variables <https://en.wikipedia.org/wiki/Environment_variable>`__.
 Let's explore the environment variables, using the :code:`env:` object:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 18
 
     PS /home/elf> Get-ChildItem env:
@@ -872,7 +876,7 @@ Let's explore the environment variables, using the :code:`env:` object:
 
 The :code:`riddle` variable seems interesting. Let's expand it:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> Get-ChildItem env:riddle | Format-List
 
@@ -884,7 +888,7 @@ The :code:`riddle` variable seems interesting. Let's expand it:
 Alright, let's list every file in :code:`/etc` and sort by their
 :code:`LastWriteTime` attribute:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 7
 
     PS /home/elf> Get-ChildItem -recurse /etc | sort LastWriteTime
@@ -897,7 +901,7 @@ Alright, let's list every file in :code:`/etc` and sort by their
 
 The newest file seems to be an archive. Let's extract it:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 18 19
 
     PS /home/elf> Expand-Archive -Path /etc/apt/archive -DestinationPath extracted_archive
@@ -933,7 +937,7 @@ encoding it, and then decoding it on a Linux box. I was then able to run it:
 This gives us the correct value for the refraction variable. Now, let's look
 at the :code:`riddle` file:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf/extracted_archive/refraction> Get-Content ./riddle
     Very shallow am I in the depths of your elf home. You can find my entity by using my md5 identity:
@@ -943,7 +947,7 @@ at the :code:`riddle` file:
 So, we must look for a file in the :code:`/home/elf/depths` folder, with an
 MD5 sum equal to :code:`25520151A320B5B0D21561F92C8F6224`. Let's take a look:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 5
 
     PS /home/elf> Get-ChildItem -file -recurse ./depths/ | get-filehash -algorithm MD5 | where-object { $_.HASH -eq "25520151A320B5B0D21561F92C8F6224" } | Format-List
@@ -955,7 +959,7 @@ MD5 sum equal to :code:`25520151A320B5B0D21561F92C8F6224`. Let's take a look:
 The file with an MD5 sum of :code:`25520151A320B5B0D21561F92C8F6224` seems to
 be :code:`/home/elf/depths/produce/thhy5hll.txt`. Let's look inside:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 2
 
     PS /home/elf> Get-Content /home/elf/depths/produce/thhy5hll.txt
@@ -969,7 +973,7 @@ Apparently, the new file to find is the one with the longest full name in
 :code:`/home/elf/depths`. Let's list the file and sort them by their
 :code:`FullName` attribute:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf/> Get-ChildItem -file -recurse /home/elf/depths | sort {  $_.FullName.length } | select-object -property FullName | fl
     [...]
@@ -992,7 +996,7 @@ Once we find the file with the longest name, we're tasked with a new challenge.
 We must kill the processes of the given users, in this particular order. Let's
 list the processes and kill them:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> Get-Process -IncludeUserName
 
@@ -1015,7 +1019,7 @@ list the processes and kill them:
 After killing the processes, the riddle said that we :code:`/shall/see`. Let's
 look into the :code:`/shall` folder at the root of the file system:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 8
 
     PS /home/elf/extracted_archive/refraction> dir /shall
@@ -1029,7 +1033,7 @@ look into the :code:`/shall` folder at the root of the file system:
 
 There is indeed a :code:`/shall/see` file. Let's get its content:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> Get-Content /shall/see
     Get the .xml children of /etc - an event log to be found. Group all .Id's and the last thing will be in the Properties of the lonely unique event Id.
@@ -1038,7 +1042,7 @@ So, there is an event log in XML format in :code:`/etc`. We must find the event
 with the unique :code:`Id`, and the last parameters for the alser will be in
 its properties. First, let's find this XML file:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 11 15
 
     PS /home/elf/extracted_archive/refraction> Get-ChildItem -recurse -file -include "*.xml" /etc       
@@ -1060,13 +1064,13 @@ its properties. First, let's find this XML file:
 So, the event log sits at :code:`/etc/systemd/system/timers.target.wants/EventLog.xml`.
 We can directly parse the content of the file in PowerShell:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> [xml]$event_log = gc /etc/systemd/system/timers.target.wants/EventLog.xml
 
 Then, let's take a look at every :code:`Id` to see which one is unique:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 5
 
     PS /home/elf> $event_log.Objs.Obj.Props.I32 | ? { $_.N -eq "Id" } | % {$_.'#text'} | Group-Object | Format-Table count, name   
@@ -1083,7 +1087,7 @@ Then, let's take a look at every :code:`Id` to see which one is unique:
 So, the unique :code:`Id` seems to be :code:`1`. Let's list the properties of
 the event with :code:`Id=1`:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 9
 
     PS /home/elf> $event_log.Objs.Obj | ? { $_.Props.I32.N -eq 'Id' -and $_.Props.I32.'#text' -eq 1} | % { $_.Props.Obj.LST.Obj.Props.S.'#text' }
@@ -1107,7 +1111,7 @@ parameters to repair the laser.
 
 First let's update the angle:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> (Invoke-WebRequest http://127.0.0.1:1225/api/angle?val=65.5).RawContent
     HTTP/1.0 200 OK                                                                           
@@ -1121,7 +1125,7 @@ First let's update the angle:
 
 Now the refraction:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> (Invoke-WebRequest http://127.0.0.1:1225/api/refraction?val=1.867).RawContent
     HTTP/1.0 200 OK                                                                           
@@ -1135,7 +1139,7 @@ Now the refraction:
 
 Then the temperature:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> (Invoke-WebRequest http://127.0.0.1:1225/api/temperature?val=-33.5).RawContent
     HTTP/1.0 200 OK                                                                           
@@ -1149,7 +1153,7 @@ Then the temperature:
 
 And finally the gas levels:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> $correct_gases_postbody = @{ O=6; H=7; He=3; N=4; Ne=22; Ar=11; Xe=10; F=20; Kr=8; Rn=9}
     PS /home/elf> (Invoke-WebRequest -Uri http://127.0.0.1:1225/api/gas -Method POST -Body $correct_gases_postbody).RawContent
@@ -1164,7 +1168,7 @@ And finally the gas levels:
 
 Aaaaand:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> (Invoke-WebRequest http://127.0.0.1:1225/api/output).RawContent
     HTTP/1.0 200 OK                                                                           
@@ -1178,7 +1182,7 @@ Aaaaand:
 
 It didn't work! Hmm, maybe we should try `turning it off and on again? <https://www.youtube.com/watch?v=p85xwZ_OLX0>`__
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS /home/elf> (Invoke-WebRequest http://127.0.0.1:1225/api/off).RawContent
     HTTP/1.0 200 OK                                                                           
@@ -3115,7 +3119,7 @@ it means? It's reverse engineering time!
 Before static analysis, let's launch the :code:`elfscrow.exe` tool, to see how
 it works:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS C:\Users\root\Documents\objectif_10> .\elfscrow.exe
     Welcome to ElfScrow V1.01, the only encryption trusted by Santa!
@@ -3144,7 +3148,7 @@ sent to a `trusted third party <https://en.wikipedia.org/wiki/Escrow>`__.
 Let's encrypt a document, and specify the :code:`--insecure` flag, so that we
 can observe network communications:
 
-.. code-block:: console
+.. code-block:: ps1con
     :hl_lines: 8 10 16
 
     PS C:\Users\root\Documents\objectif_10> .\elfscrow.exe --insecure --encrypt .\text.txt test.enc
@@ -3216,7 +3220,7 @@ which then gives us an id that will be used for decryption.
 
 Let's see the decryption process:
 
-.. code-block:: console
+.. code-block:: ps1con
 
     PS C:\Users\root\Documents\objectif_10> .\elfscrow.exe --id=ed662e52-a681-42c8-acf9-bee4caa4f5a8 --insecure --decrypt test.enc test.dec
     Welcome to ElfScrow V1.01, the only encryption trusted by Santa!
@@ -4311,7 +4315,7 @@ addresses to block.
 By taking a look at the logs, we can search for the following terms for the
 different attacks:
 
-* For SQLi : :code:`SELECT` and :code:`or `
+* For SQLi : :code:`SELECT` and :code:`or ​`
 * For XSS : :code:`<script>`
 * For LFI : :code:`/etc`, :code:`../`, and :code:`./.`
 * For Shell-shock : :code:`()`

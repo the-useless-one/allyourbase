@@ -38,3 +38,8 @@ main audio
     margin: 0 auto;
 }
 
+main article
+{
+    max-width: 100%;
+}
+
