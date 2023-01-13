@@ -255,7 +255,7 @@ Let's open the PCAP file in Wireshark:
 
 It looks like this is mainly HTTP traffic. If we go to the :code:`File >
 Export Objects` menu in Wireshark, we can see several object types, but only
-the :code:`HTTP` entry gives us file that can be extracted:
+the :code:`HTTP` entry gives us a file that can be extracted:
 
 .. image:: /images/sans-christmas-challenge-2022/tolkien_ring_wireshark_file_export.png
     :alt: The HTTP file export functionality. We see three entries:
@@ -350,7 +350,7 @@ Sudan, United States of America`.
 
     Is the host infected (Yes/No)?
 
-Well if some weird behavior has been observed, it's mots likely that the host
+Well if some weird behavior has been observed, it's most likely that the host
 has been infected: :code:`Yes`.
 
 After answering all questions properly, we talk to Sparkle Redberry again:
@@ -840,8 +840,8 @@ Now we can run the rule checker:
     Develop a Suricata rule that alerts whenever the infected IP address 192.185.57.242 communicates with internal systems over HTTP.
     When there's a match, the message (msg) should read Investigate suspicious connections, possible Dridex infection
 
-Our first rule seems correct, and must now create a second one that creates an
-alert when HTTP communications occur with :code:`192.185.57.242`:
+Our first rule seems correct, and we must now write a second one that creates
+an alert when HTTP communications occur with :code:`192.185.57.242`:
 
 .. code-block:: text
 
